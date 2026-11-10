@@ -10,33 +10,86 @@
   html, body { height: 100%; overflow-x: hidden; background: #0e0b09; color: #e8e2d9; font-family: 'Jost', sans-serif; }
   body.locked { overflow: hidden; }
 
-  /* ---------- CURTAIN INTRO ---------- */
+  /* ---------- REALISTIC CSS CURTAIN INTRO ---------- */
   #curtain-stage {
     position: fixed; inset: 0; z-index: 100;
-    background: #0e0b09;
+    background: #120e0c; /* Dark room behind curtains */
+    overflow: hidden;
     display: flex; justify-content: center; align-items: center;
+  }
+
+  /* The warm sunlight glow behind the curtains */
+  #curtain-stage::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 50%, #f6ecd6 0%, #d4bc93 40%, #120e0c 100%);
+    opacity: 0.9;
+  }
+
+  /* The Curtain Fabric */
+  .curtain-panel {
+    position: absolute; top: 0; height: 100%; width: 55%; /* Overlap slightly in center */
+    /* Creates realistic vertical fabric folds */
+    background: repeating-linear-gradient(90deg, 
+      #e8d5a7 0%, 
+      #fdf4dc 15%, 
+      #e8d5a7 30%, 
+      #fdf4dc 45%, 
+      #e8d5a7 60%, 
+      #fdf4dc 75%, 
+      #e8d5a7 100%
+    );
+    box-shadow: inset 0 0 120px rgba(80, 50, 20, 0.5); /* Depth shadow */
+    transition: transform 5s cubic-bezier(0.25, 1, 0.3, 1); /* 5-second sweep animation */
+    z-index: 2;
+    will-change: transform;
+  }
+
+  .curtain-panel.left { 
+    left: 0; 
+    transform-origin: left center; 
+    border-right: 2px solid rgba(120, 90, 50, 0.3); 
+  }
+  
+  .curtain-panel.right { 
+    right: 0; 
+    transform-origin: right center; 
+    border-left: 2px solid rgba(120, 90, 50, 0.3);
+  }
+
+  /* The gold tie-backs that hold the curtains */
+  .tie-back {
+    position: absolute; top: 50%; width: 30px; height: 60px;
+    background: linear-gradient(180deg, #e7cf98, #c8a865 55%, #a8873f);
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    z-index: 3;
+    transition: transform 5s cubic-bezier(0.25, 1, 0.3, 1);
+  }
+  
+  .tie-back.left { left: calc(55% - 20px); }
+  .tie-back.right { right: calc(55% - 20px); }
+
+  /* The Logo on the curtain */
+  .curtain-logo {
+    position: relative; z-index: 5; text-align: center;
     transition: opacity 1s ease;
   }
-
-  /* The GIF */
-  #curtain-gif {
-    width: 100%; 
-    height: 100%;
-    object-fit: cover; /* Desktop: fills screen */
-    object-position: center; 
+  .curtain-logo h1 {
+    font-family: 'Cormorant Garamond', serif; font-size: 5rem;
+    font-weight: 500; letter-spacing: 0.3em; color: #2e1f14;
+    text-shadow: 0 4px 15px rgba(255,255,255,0.6);
   }
 
-  /* Mobile specific tweak: Make GIF fit perfectly without stretching */
-  @media (max-width: 768px) {
-    #curtain-gif {
-      object-fit: contain; /* Mobile: shows the whole GIF */
-      width: 100%;
-      height: 100%;
-    }
-  }
+  /* The animation classes triggered by JS */
+  .curtain-open .curtain-panel.left { transform: translateX(-100%) skewX(-3deg); }
+  .curtain-open .curtain-panel.right { transform: translateX(100%) skewX(3deg); }
+  .curtain-open .tie-back.left { transform: translateX(-100vw); }
+  .curtain-open .tie-back.right { transform: translateX(100vw); }
+  .curtain-open .curtain-logo { opacity: 0; }
+
 
   /* ---------- MAIN SITE ---------- */
-  #main-site { opacity: 0; transition: opacity 1.2s ease; }
+  #main-site { opacity: 0; transition: opacity 2s ease; }
   #main-site.visible { opacity: 1; }
 
   header {
@@ -81,6 +134,7 @@
 
   /* ---------- MOBILE SPECIFIC OVERRIDES ---------- */
   @media (max-width: 768px) {
+    .curtain-logo h1 { font-size: 3rem; }
     header { padding: 20px; flex-direction: column; gap: 15px; }
     nav { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
     nav a { margin-left: 0; font-size: 0.65rem; }
@@ -93,9 +147,17 @@
 </head>
 <body class="locked">
 
-<!-- CURTAIN INTRO -->
+<!-- CSS CURTAIN INTRO -->
 <div id="curtain-stage">
-  <img src="curtains.gif" id="curtain-gif" alt="Maison by Ari Opening" loading="eager">
+  <div class="curtain-panel left"></div>
+  <div class="curtain-panel right"></div>
+  
+  <div class="tie-back left"></div>
+  <div class="tie-back right"></div>
+  
+  <div class="curtain-logo">
+    <h1>MAISON</h1>
+  </div>
 </div>
 
 <!-- MAIN SITE -->
@@ -157,25 +219,20 @@
     const stage = document.getElementById('curtain-stage');
     const main  = document.getElementById('main-site');
 
-    // Set to 5000 (5 seconds) to match your new GIF length
-    const gifDuration = 5000; 
-
+    // Wait 0.5 seconds, then trigger the 5-second curtain opening animation
     setTimeout(() => {
-      // Fade out the GIF
-      stage.style.opacity = '0';
+      stage.classList.add('curtain-open');
       
-      // Show the website
+      // Fade in the main website as the curtains sweep open
       main.classList.add('visible');
-      
-      // Unlock scrolling
       document.body.classList.remove('locked');
 
-      // Completely remove the GIF after the fade finishes
+      // Remove the curtain stage completely after the 5-second animation finishes
       setTimeout(() => {
         stage.style.display = 'none';
-      }, 1000);
+      }, 5200); // 5200ms = 5.2 seconds
 
-    }, gifDuration);
+    }, 500); // 500ms = 0.5 second delay before opening
   });
 </script>
 </body>
