@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>MAISON BY ARI — Interior Decor</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -15,22 +15,23 @@
     position: fixed; inset: 0; z-index: 100;
     background: #0e0b09;
     display: flex; justify-content: center; align-items: center;
-    transition: opacity 1s ease; /* Fades out smoothly */
+    transition: opacity 1s ease;
   }
 
   /* The GIF */
   #curtain-gif {
     width: 100%; 
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover; /* Desktop: fills screen */
     object-position: center; 
   }
 
-  /* Mobile specific tweak */
+  /* Mobile specific tweak: Make GIF fit perfectly without stretching */
   @media (max-width: 768px) {
     #curtain-gif {
-      width: 200vh; 
-      height: 100vh;
+      object-fit: contain; /* Mobile: shows the whole GIF */
+      width: 100%;
+      height: 100%;
     }
   }
 
@@ -52,15 +53,15 @@
   .hero {
     height: 100vh; position: relative; display: flex; align-items: center; justify-content: center;
     background: linear-gradient(rgba(14,11,9,0.3), rgba(14,11,9,0.6)), url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2000') center/cover no-repeat;
-    text-align: center;
+    text-align: center; padding: 0 20px;
   }
-  .hero-content h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 8vw, 7rem); font-weight: 300; letter-spacing: 0.12em; color: #f4efe6; line-height: 1.05; }
-  .hero-content .tagline { margin-top: 26px; font-size: 0.8rem; letter-spacing: 0.55em; text-transform: uppercase; color: #c9a96a; font-weight: 300; }
+  .hero-content h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 7rem); font-weight: 300; letter-spacing: 0.12em; color: #f4efe6; line-height: 1.1; }
+  .hero-content .tagline { margin-top: 26px; font-size: clamp(0.6rem, 2vw, 0.8rem); letter-spacing: 0.55em; text-transform: uppercase; color: #c9a96a; font-weight: 300; }
   .rule { width: 60px; height: 1px; background: #c9a96a; margin: 34px auto 0; }
 
   section { padding: 140px 56px; max-width: 1400px; margin: 0 auto; }
   .section-label { font-size: 0.7rem; letter-spacing: 0.5em; text-transform: uppercase; color: #c9a96a; margin-bottom: 24px; }
-  h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 300; letter-spacing: 0.05em; margin-bottom: 40px; }
+  h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 300; letter-spacing: 0.05em; margin-bottom: 40px; }
 
   .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
   .gallery figure { position: relative; overflow: hidden; aspect-ratio: 4/5; }
@@ -78,18 +79,23 @@
   footer .logo { margin-bottom: 20px; }
   footer p { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: #8a8177; font-weight: 300; }
 
-  @media (max-width: 640px) {
-    header { padding: 22px 24px; }
-    nav a { margin-left: 18px; font-size: 0.65rem; }
-    section { padding: 90px 24px; }
+  /* ---------- MOBILE SPECIFIC OVERRIDES ---------- */
+  @media (max-width: 768px) {
+    header { padding: 20px; flex-direction: column; gap: 15px; }
+    nav { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+    nav a { margin-left: 0; font-size: 0.65rem; }
+    section { padding: 80px 20px; }
+    .gallery { grid-template-columns: 1fr; }
+    .services { grid-template-columns: 1fr; }
+    h2 { margin-bottom: 24px; }
   }
 </style>
 </head>
 <body class="locked">
 
-<!-- CURTAIN INTRO (Just the GIF) -->
+<!-- CURTAIN INTRO -->
 <div id="curtain-stage">
-  <img src="curtains.gif" id="curtain-gif" alt="Maison by Ari Opening">
+  <img src="curtains.gif" id="curtain-gif" alt="Maison by Ari Opening" loading="eager">
 </div>
 
 <!-- MAIN SITE -->
@@ -151,8 +157,8 @@
     const stage = document.getElementById('curtain-stage');
     const main  = document.getElementById('main-site');
 
-    // Set to 1000 (1 second) because your GIF is 1 second long
-    const gifDuration = 1000; 
+    // Set to 5000 (5 seconds) to match your new GIF length
+    const gifDuration = 5000; 
 
     setTimeout(() => {
       // Fade out the GIF
