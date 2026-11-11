@@ -23,12 +23,12 @@
     transition: transform 0.1s ease-out;
   }
 
-  /* ---------- VIDEO INTRO 1 (No Text) ---------- */
+  /* ---------- VIDEO INTRO 1 ---------- */
   #video-intro {
     position: fixed; inset: 0; z-index: 100;
     background: #0a0807;
     display: flex; justify-content: center; align-items: center;
-    transition: opacity 2s ease; 
+    transition: opacity 1.5s ease; 
   }
 
   #video-intro video {
@@ -37,7 +37,7 @@
   }
 
   /* ---------- MAIN SITE ---------- */
-  #main-site { opacity: 0; transition: opacity 2s ease; }
+  #main-site { opacity: 0; transition: opacity 1.5s ease; }
   #main-site.visible { opacity: 1; }
 
   header {
@@ -51,13 +51,12 @@
   }
   nav a:hover { opacity: 0.55; }
 
-  /* HERO SECTION WITH VIDEO 2 BACKGROUND */
+  /* HERO SECTION WITH LOOPING VIDEO 2 */
   .hero {
     height: 100vh; position: relative; display: flex; align-items: center; justify-content: center;
     text-align: center; padding: 0 20px; overflow: hidden;
   }
 
-  /* The second video playing in the background */
   .hero-video-bg {
     position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
@@ -65,10 +64,9 @@
     z-index: -2;
   }
 
-  /* Dark overlay so the text is readable over the video */
   .hero-overlay {
     position: absolute; inset: 0;
-    background: rgba(10, 8, 7, 0.5);
+    background: rgba(10, 8, 7, 0.4); 
     z-index: -1;
   }
 
@@ -117,10 +115,9 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-follower" id="cursorFollower"></div>
 
-<!-- VIDEO INTRO 1 (The 6-second opening) -->
+<!-- VIDEO INTRO 1 (Renamed to video.mp4) -->
 <div id="video-intro">
-  <!-- File must be named video1.mp4 -->
-  <video id="intro-video" src="video1.mp4" playsinline muted autoplay></video>
+  <video id="intro-video" src="video.mp4" playsinline muted autoplay></video>
 </div>
 
 <!-- MAIN SITE -->
@@ -135,9 +132,9 @@
     </nav>
   </header>
 
-  <!-- HERO SECTION WITH VIDEO 2 -->
+  <!-- HERO SECTION WITH LOOPING VIDEO 2 -->
   <div class="hero">
-    <!-- File must be named video2.mp4 -->
+    <!-- Video 2 loops here -->
     <video class="hero-video-bg" src="video2.mp4" autoplay loop muted playsinline></video>
     <div class="hero-overlay"></div>
     
@@ -208,7 +205,7 @@
   }
   animateCursor();
 
-  // 2. VIDEO INTRO TIMING (6 Seconds)
+  // 2. VIDEO INTRO TIMING
   document.addEventListener("DOMContentLoaded", function() {
     const videoIntro = document.getElementById('video-intro');
     const mainSite = document.getElementById('main-site');
@@ -219,23 +216,21 @@
       if (transitionTriggered) return;
       transitionTriggered = true;
 
-      // Fade out the intro video
       videoIntro.style.opacity = '0';
-      // Fade in the main site (which triggers video2 to be visible)
       mainSite.classList.add('visible');
       document.body.classList.remove('locked');
       
       setTimeout(() => {
         video.pause();
         videoIntro.style.display = 'none';
-      }, 2000);
+      }, 1500); 
     }
 
-    // Try to play intro video
+    // Play the 3-second video
     video.play().catch((e) => console.log("Autoplay blocked."));
 
-    // Set the 6.5-second timer
-    setTimeout(revealSite, 6500); 
+    // Trigger the site reveal right when the 3-second video should end
+    setTimeout(revealSite, 3200); 
     video.addEventListener('ended', revealSite);
   });
 </script>
