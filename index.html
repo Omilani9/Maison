@@ -3,90 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>MAISON BY ARI — Interior Decor</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<title>MAISON BY ZEE — Interior Decor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; overflow-x: hidden; background: #0e0b09; color: #e8e2d9; font-family: 'Jost', sans-serif; }
+  html, body { height: 100%; overflow-x: hidden; background: #0a0807; color: #e8e2d9; font-family: 'Jost', sans-serif; }
   body.locked { overflow: hidden; }
 
-  /* ---------- REALISTIC CSS CURTAIN INTRO ---------- */
-  #curtain-stage {
+  /* Custom Golden Cursor (Desktop only) */
+  .cursor {
+    position: fixed; top: 0; left: 0; width: 8px; height: 8px;
+    background-color: #c9a96a; border-radius: 50%; pointer-events: none;
+    z-index: 9999; transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background-color 0.3s;
+  }
+  .cursor-follower {
+    position: fixed; top: 0; left: 0; width: 40px; height: 40px;
+    border: 1px solid rgba(201, 169, 106, 0.4); border-radius: 50%;
+    pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
+  }
+
+  /* ---------- VIDEO INTRO ---------- */
+  #video-intro {
     position: fixed; inset: 0; z-index: 100;
-    background: #120e0c; /* Dark room behind curtains */
-    overflow: hidden;
+    background: #0a0807;
     display: flex; justify-content: center; align-items: center;
+    transition: opacity 2s ease; /* Slow, luxurious fade out */
   }
 
-  /* The warm sunlight glow behind the curtains */
-  #curtain-stage::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at 50% 50%, #f6ecd6 0%, #d4bc93 40%, #120e0c 100%);
-    opacity: 0.9;
+  #video-intro video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6); /* Darken video for text readability */
   }
 
-  /* The Curtain Fabric */
-  .curtain-panel {
-    position: absolute; top: 0; height: 100%; width: 55%; /* Overlap slightly in center */
-    /* Creates realistic vertical fabric folds */
-    background: repeating-linear-gradient(90deg, 
-      #e8d5a7 0%, 
-      #fdf4dc 15%, 
-      #e8d5a7 30%, 
-      #fdf4dc 45%, 
-      #e8d5a7 60%, 
-      #fdf4dc 75%, 
-      #e8d5a7 100%
-    );
-    box-shadow: inset 0 0 120px rgba(80, 50, 20, 0.5); /* Depth shadow */
-    transition: transform 5s cubic-bezier(0.25, 1, 0.3, 1); /* 5-second sweep animation */
-    z-index: 2;
-    will-change: transform;
+  .intro-overlay {
+    position: absolute; z-index: 2; text-align: center;
+    pointer-events: none; /* Let clicks pass through to video if needed */
   }
-
-  .curtain-panel.left { 
-    left: 0; 
-    transform-origin: left center; 
-    border-right: 2px solid rgba(120, 90, 50, 0.3); 
+  .intro-overlay h1 {
+    font-family: 'Cormorant Garamond', serif; 
+    font-size: clamp(3rem, 10vw, 7rem); 
+    font-weight: 300; letter-spacing: 0.2em; color: #f4efe6;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.8);
   }
-  
-  .curtain-panel.right { 
-    right: 0; 
-    transform-origin: right center; 
-    border-left: 2px solid rgba(120, 90, 50, 0.3);
-  }
-
-  /* The gold tie-backs that hold the curtains */
-  .tie-back {
-    position: absolute; top: 50%; width: 30px; height: 60px;
-    background: linear-gradient(180deg, #e7cf98, #c8a865 55%, #a8873f);
-    border-radius: 50%;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-    z-index: 3;
-    transition: transform 5s cubic-bezier(0.25, 1, 0.3, 1);
-  }
-  
-  .tie-back.left { left: calc(55% - 20px); }
-  .tie-back.right { right: calc(55% - 20px); }
-
-  /* The Logo on the curtain */
-  .curtain-logo {
-    position: relative; z-index: 5; text-align: center;
-    transition: opacity 1s ease;
-  }
-  .curtain-logo h1 {
-    font-family: 'Cormorant Garamond', serif; font-size: 5rem;
-    font-weight: 500; letter-spacing: 0.3em; color: #2e1f14;
-    text-shadow: 0 4px 15px rgba(255,255,255,0.6);
-  }
-
-  /* The animation classes triggered by JS */
-  .curtain-open .curtain-panel.left { transform: translateX(-100%) skewX(-3deg); }
-  .curtain-open .curtain-panel.right { transform: translateX(100%) skewX(3deg); }
-  .curtain-open .tie-back.left { transform: translateX(-100vw); }
-  .curtain-open .tie-back.right { transform: translateX(100vw); }
-  .curtain-open .curtain-logo { opacity: 0; }
-
 
   /* ---------- MAIN SITE ---------- */
   #main-site { opacity: 0; transition: opacity 2s ease; }
@@ -95,9 +56,9 @@
   header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 50;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 28px 56px; mix-blend-mode: difference;
+    padding: 32px 56px; mix-blend-mode: difference;
   }
-  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; letter-spacing: 0.35em; color: #f4efe6; font-weight: 500; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; letter-spacing: 0.35em; color: #f4efe6; font-weight: 500; }
   nav a {
     color: #f4efe6; text-decoration: none; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; margin-left: 38px; font-weight: 300; transition: opacity 0.3s;
   }
@@ -105,7 +66,8 @@
 
   .hero {
     height: 100vh; position: relative; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(rgba(14,11,9,0.3), rgba(14,11,9,0.6)), url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2000') center/cover no-repeat;
+    background: linear-gradient(rgba(10,8,7,0.3), rgba(10,8,7,0.6)), url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2000') center/cover no-repeat;
+    background-attachment: fixed; /* Parallax effect */
     text-align: center; padding: 0 20px;
   }
   .hero-content h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 7rem); font-weight: 300; letter-spacing: 0.12em; color: #f4efe6; line-height: 1.1; }
@@ -131,10 +93,15 @@
   footer { text-align: center; padding: 90px 24px 60px; border-top: 1px solid rgba(201, 169, 106, 0.2); }
   footer .logo { margin-bottom: 20px; }
   footer p { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: #8a8177; font-weight: 300; }
+  
+  /* Contact Links */
+  .contact-info a {
+    color: #c9a96a; text-decoration: none; transition: color 0.3s;
+  }
+  .contact-info a:hover { color: #f4efe6; }
 
-  /* ---------- MOBILE SPECIFIC OVERRIDES ---------- */
   @media (max-width: 768px) {
-    .curtain-logo h1 { font-size: 3rem; }
+    .cursor, .cursor-follower { display: none; } /* Hide custom cursor on mobile */
     header { padding: 20px; flex-direction: column; gap: 15px; }
     nav { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
     nav a { margin-left: 0; font-size: 0.65rem; }
@@ -147,23 +114,24 @@
 </head>
 <body class="locked">
 
-<!-- CSS CURTAIN INTRO -->
-<div id="curtain-stage">
-  <div class="curtain-panel left"></div>
-  <div class="curtain-panel right"></div>
+<!-- Custom Cursor Elements -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- VIDEO INTRO -->
+<div id="video-intro">
+  <!-- Ensure your video is named video.mp4 -->
+  <video id="intro-video" src="video.mp4" playsinline muted autoplay></video>
   
-  <div class="tie-back left"></div>
-  <div class="tie-back right"></div>
-  
-  <div class="curtain-logo">
-    <h1>MAISON</h1>
+  <div class="intro-overlay">
+    <h1>MAISON BY ZEE</h1>
   </div>
 </div>
 
 <!-- MAIN SITE -->
 <div id="main-site">
   <header>
-    <div class="logo">MAISON BY ARI</div>
+    <div class="logo">MAISON BY ZEE</div>
     <nav>
       <a href="#portfolio">Portfolio</a>
       <a href="#about">About</a>
@@ -174,7 +142,7 @@
 
   <div class="hero">
     <div class="hero-content">
-      <h1>MAISON<br>BY ARI</h1>
+      <h1>MAISON<br>BY ZEE</h1>
       <p class="tagline">Interior Decor · Curated Spaces</p>
       <div class="rule"></div>
     </div>
@@ -194,7 +162,7 @@
   <section id="about" class="about">
     <p class="section-label">Our Story</p>
     <h2>Quiet Luxury,<br>Bold Intent</h2>
-    <p>Maison by Ari is an interior decor atelier devoted to the extraordinary. We compose spaces where texture, light, and proportion converse — each room an heirloom in the making. Every commission is bespoke, every detail deliberate, every home unmistakably its own.</p>
+    <p>Maison by Zee is an interior decor atelier devoted to the extraordinary. We compose spaces where texture, light, and proportion converse — each room an heirloom in the making. Every commission is bespoke, every detail deliberate, every home unmistakably its own.</p>
   </section>
 
   <section id="services">
@@ -208,31 +176,87 @@
     </div>
   </section>
 
-  <footer id="contact">
-    <div class="logo">MAISON BY ARI</div>
-    <p>hello@maisonbyari.com &nbsp;·&nbsp; +234 000 000 0000 &nbsp;·&nbsp; Lagos · London</p>
+  <footer id="contact" class="contact-info">
+    <div class="logo">MAISON BY ZEE</div>
+    <p>
+      <a href="mailto:zainabadebayo817@gmail.com">zainabadebayo817@gmail.com</a> 
+      &nbsp;·&nbsp; 
+      <a href="tel:09074694255">0907 469 4255</a> 
+      &nbsp;·&nbsp; 
+      Lagos · London
+    </p>
   </footer>
 </div>
 
+<!-- TOP-LEVEL JAVASCRIPT (Unique Effects & Timers) -->
 <script>
+  // 1. CUSTOM GOLDEN CURSOR
+  const cursor = document.getElementById('cursor');
+  const cursorFollower = document.getElementById('cursorFollower');
+  
+  let mouseX = 0, mouseY = 0;
+  let followerX = 0, followerY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Instantly move the small dot
+    cursor.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+  });
+
+  // Smoothly animate the larger follower ring
+  function animateCursor() {
+    // Ease calculation
+    followerX += (mouseX - followerX) * 0.15;
+    followerY += (mouseY - followerY) * 0.15;
+    
+    cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px)`;
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // 2. VIDEO TIMING LOGIC (ALIGNED WITH 6 SECONDS)
   document.addEventListener("DOMContentLoaded", function() {
-    const stage = document.getElementById('curtain-stage');
-    const main  = document.getElementById('main-site');
+    const videoIntro = document.getElementById('video-intro');
+    const mainSite = document.getElementById('main-site');
+    const video = document.getElementById('intro-video');
+    let transitionTriggered = false;
 
-    // Wait 0.5 seconds, then trigger the 5-second curtain opening animation
-    setTimeout(() => {
-      stage.classList.add('curtain-open');
-      
-      // Fade in the main website as the curtains sweep open
-      main.classList.add('visible');
+    // Function to fade out video and show site
+    function revealSite() {
+      if (transitionTriggered) return;
+      transitionTriggered = true;
+
+      videoIntro.style.opacity = '0';
+      mainSite.classList.add('visible');
       document.body.classList.remove('locked');
-
-      // Remove the curtain stage completely after the 5-second animation finishes
+      
       setTimeout(() => {
-        stage.style.display = 'none';
-      }, 5200); // 5200ms = 5.2 seconds
+        video.pause();
+        videoIntro.style.display = 'none';
+      }, 2000); // Matches the 2s CSS fade
+    }
 
-    }, 500); // 500ms = 0.5 second delay before opening
+    // Start video (handle autoplay blocking)
+    video.play().catch((e) => {
+      console.log("Autoplay blocked. Waiting for 6 seconds anyway.");
+    });
+
+    // Set a 6-second timer to transition exactly when the video should end
+    // (Plus 0.5s buffer for the video to fully finish rendering)
+    setTimeout(revealSite, 6500); 
+
+    // Optional: If the video ends naturally before 6s, trigger immediately
+    video.addEventListener('ended', revealSite);
+  });
+
+  // 3. SCROLL PARALLAX EFFECT ON HERO
+  window.addEventListener('scroll', () => {
+    const hero = document.querySelector('.hero');
+    const scrollPosition = window.pageYOffset;
+    // Move the background slightly slower than the scroll
+    hero.style.backgroundPositionY = `${scrollPosition * 0.4}px`;
   });
 </script>
 </body>
