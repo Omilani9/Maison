@@ -103,12 +103,23 @@
   .service h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; letter-spacing: 0.1em; margin-bottom: 14px; }
   .service p { font-size: 0.85rem; line-height: 1.9; color: #a89f92; font-weight: 300; }
 
+  /* Footer & Contact */
   footer { text-align: center; padding: 90px 24px 60px; border-top: 1px solid rgba(201, 169, 106, 0.2); }
-  footer .logo { margin-bottom: 20px; }
-  footer p { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: #8a8177; font-weight: 300; }
+  footer .logo { margin-bottom: 30px; }
   
-  .contact-info a { color: #c9a96a; text-decoration: none; transition: color 0.3s; }
-  .contact-info a:hover { color: #f4efe6; }
+  .contact-info {
+    display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px;
+    font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 300;
+  }
+  
+  .contact-info a { 
+    color: #c9a96a; text-decoration: none; transition: color 0.3s, transform 0.3s; 
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .contact-info a:hover { color: #f4efe6; transform: translateY(-2px); }
+
+  /* Separator dots between links */
+  .contact-info .separator { color: #8a8177; }
 
   @media (max-width: 768px) {
     .cursor, .cursor-follower { display: none; }
@@ -120,6 +131,10 @@
     .gallery { grid-template-columns: 1fr; }
     .services { grid-template-columns: 1fr; }
     h2 { margin-bottom: 24px; }
+    
+    /* Stack contact links neatly on mobile */
+    .contact-info { flex-direction: column; gap: 15px; }
+    .contact-info .separator { display: none; } 
   }
 </style>
 </head>
@@ -183,15 +198,23 @@
     </div>
   </section>
 
-  <footer id="contact" class="contact-info">
+  <footer id="contact">
     <div class="logo">MAISON BY ZEE</div>
-    <p>
+    
+    <div class="contact-info">
+      <!-- Email -->
       <a href="mailto:zainabadebayo817@gmail.com">zainabadebayo817@gmail.com</a> 
-      &nbsp;·&nbsp; 
-      <a href="tel:09074694255">0907 469 4255</a> 
-      &nbsp;·&nbsp; 
-      Lagos · London
-    </p>
+      
+      <span class="separator">·</span>
+      
+      <!-- WhatsApp (Using international format 234) -->
+      <a href="https://wa.me/2349074694255" target="_blank">WhatsApp</a>
+      
+      <span class="separator">·</span>
+      
+      <!-- Instagram -->
+      <a href="https://instagram.com/maisonbyzee" target="_blank">@maisonbyzee</a>
+    </div>
   </footer>
 </div>
 
