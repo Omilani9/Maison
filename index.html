@@ -115,7 +115,7 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-follower" id="cursorFollower"></div>
 
-<!-- VIDEO INTRO 1 (Renamed to video.mp4) -->
+<!-- VIDEO INTRO 1 -->
 <div id="video-intro">
   <video id="intro-video" src="video.mp4" playsinline muted autoplay></video>
 </div>
@@ -134,8 +134,8 @@
 
   <!-- HERO SECTION WITH LOOPING VIDEO 2 -->
   <div class="hero">
-    <!-- Video 2 loops here -->
-    <video class="hero-video-bg" src="video2.mp4" autoplay loop muted playsinline></video>
+    <!-- Added ID and loop -->
+    <video class="hero-video-bg" id="bg-video" src="video2.mp4" autoplay loop muted playsinline></video>
     <div class="hero-overlay"></div>
     
     <div class="hero-content">
@@ -205,33 +205,51 @@
   }
   animateCursor();
 
-  // 2. VIDEO INTRO TIMING
+  // 2. VIDEO LOGIC
   document.addEventListener("DOMContentLoaded", function() {
     const videoIntro = document.getElementById('video-intro');
     const mainSite = document.getElementById('main-site');
-    const video = document.getElementById('intro-video');
+    const introVideo = document.getElementById('intro-video');
+    const bgVideo = document.getElementById('bg-video');
     let transitionTriggered = false;
+
+    // FORCE BACKGROUND VIDEO TO KEEP PLAYING
+    // This fixes the issue where browsers pause looping videos
+    function forcePlayBg() {
+      bgVideo.play().catch(e => console.log("Bg play waiting for interaction"));
+    }
+    
+    bgVideo.addEventListener('pause', forcePlayBg);
+    bgVideo.addEventListener('stalled', forcePlayBg);
+    document.addEventListener('click', forcePlayBg);
+    document.addEventListener('touchstart', forcePlayBg);
 
     function revealSite() {
       if (transitionTriggered) return;
       transitionTriggered = true;
 
+      // Hide intro video
       videoIntro.style.opacity = '0';
+      
+      // Show main site and start bg video
       mainSite.classList.add('visible');
       document.body.classList.remove('locked');
+      bgVideo.play().catch(e => console.log(e));
       
       setTimeout(() => {
-        video.pause();
+        introVideo.pause();
         videoIntro.style.display = 'none';
       }, 1500); 
     }
 
-    // Play the 3-second video
-    video.play().catch((e) => console.log("Autoplay blocked."));
+    // Play intro
+    introVideo.play().catch((e) => console.log("Intro Autoplay blocked."));
 
-    // Trigger the site reveal right when the 3-second video should end
+    // Wait 3.2 seconds for the intro, then reveal
     setTimeout(revealSite, 3200); 
-    video.addEventListener('ended', revealSite);
+    
+    // If intro finishes, reveal immediately
+    introVideo.addEventListener('ended', revealSite);
   });
 </script>
 </body>
