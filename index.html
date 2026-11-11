@@ -40,21 +40,37 @@
   #main-site { opacity: 0; transition: opacity 1.5s ease; isolation: isolate; }
   #main-site.visible { opacity: 1; }
 
+  /* HEADER - Logo left, Motto underneath, Nav right */
   header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: space-between; align-items: flex-start;
     padding: 32px 56px; mix-blend-mode: difference;
   }
-  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; letter-spacing: 0.35em; color: #f4efe6; font-weight: 500; }
+  
+  .brand-container {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  
+  .logo { 
+    font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; 
+    letter-spacing: 0.35em; color: #f4efe6; font-weight: 500; 
+  }
+  
+  .motto {
+    font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase;
+    color: #c9a96a; font-weight: 300; margin-left: 4px;
+  }
+
+  nav { display: flex; align-items: center; margin-top: 10px; }
   nav a {
     color: #f4efe6; text-decoration: none; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; margin-left: 38px; font-weight: 300; transition: opacity 0.3s;
   }
   nav a:hover { opacity: 0.55; }
 
-  /* HERO SECTION WITH LOOPING VIDEO 2 */
+  /* HERO SECTION - Video Background Only */
   .hero {
-    height: 100vh; position: relative; display: flex; align-items: center; justify-content: center;
-    text-align: center; padding: 0 20px; overflow: hidden;
+    height: 100vh; position: relative; 
+    overflow: hidden;
   }
 
   .hero-video-bg {
@@ -70,10 +86,7 @@
     z-index: -1;
   }
 
-  .hero-content h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 7rem); font-weight: 300; letter-spacing: 0.12em; color: #f4efe6; line-height: 1.1; }
-  .hero-content .tagline { margin-top: 26px; font-size: clamp(0.6rem, 2vw, 0.8rem); letter-spacing: 0.55em; text-transform: uppercase; color: #c9a96a; font-weight: 300; }
-  .rule { width: 60px; height: 1px; background: #c9a96a; margin: 34px auto 0; }
-
+  /* Sections */
   section { padding: 140px 56px; max-width: 1400px; margin: 0 auto; }
   .section-label { font-size: 0.7rem; letter-spacing: 0.5em; text-transform: uppercase; color: #c9a96a; margin-bottom: 24px; }
   h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 300; letter-spacing: 0.05em; margin-bottom: 40px; }
@@ -99,8 +112,9 @@
 
   @media (max-width: 768px) {
     .cursor, .cursor-follower { display: none; }
-    header { padding: 20px; flex-direction: column; gap: 15px; }
-    nav { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+    header { padding: 20px; flex-direction: column; gap: 15px; align-items: center; }
+    .brand-container { align-items: center; }
+    nav { margin-top: 5px; flex-wrap: wrap; justify-content: center; gap: 15px; }
     nav a { margin-left: 0; font-size: 0.65rem; }
     section { padding: 80px 20px; }
     .gallery { grid-template-columns: 1fr; }
@@ -123,7 +137,10 @@
 <!-- MAIN SITE -->
 <div id="main-site">
   <header>
-    <div class="logo">MAISON BY ZEE</div>
+    <div class="brand-container">
+      <div class="logo">MAISON BY ZEE</div>
+      <div class="motto">Interior Decor · Curated Spaces</div>
+    </div>
     <nav>
       <a href="#portfolio">Portfolio</a>
       <a href="#about">About</a>
@@ -134,15 +151,8 @@
 
   <!-- HERO SECTION WITH LOOPING VIDEO 2 -->
   <div class="hero">
-    <!-- Added ID and loop -->
     <video class="hero-video-bg" id="bg-video" src="video2.mp4" autoplay loop muted playsinline></video>
     <div class="hero-overlay"></div>
-    
-    <div class="hero-content">
-      <h1>MAISON<br>BY ZEE</h1>
-      <p class="tagline">Interior Decor · Curated Spaces</p>
-      <div class="rule"></div>
-    </div>
   </div>
 
   <section id="portfolio">
@@ -214,7 +224,6 @@
     let transitionTriggered = false;
 
     // FORCE BACKGROUND VIDEO TO KEEP PLAYING
-    // This fixes the issue where browsers pause looping videos
     function forcePlayBg() {
       bgVideo.play().catch(e => console.log("Bg play waiting for interaction"));
     }
@@ -228,10 +237,8 @@
       if (transitionTriggered) return;
       transitionTriggered = true;
 
-      // Hide intro video
       videoIntro.style.opacity = '0';
       
-      // Show main site and start bg video
       mainSite.classList.add('visible');
       document.body.classList.remove('locked');
       bgVideo.play().catch(e => console.log(e));
@@ -242,13 +249,10 @@
       }, 1500); 
     }
 
-    // Play intro
     introVideo.play().catch((e) => console.log("Intro Autoplay blocked."));
 
-    // Wait 3.2 seconds for the intro, then reveal
     setTimeout(revealSite, 3200); 
     
-    // If intro finishes, reveal immediately
     introVideo.addEventListener('ended', revealSite);
   });
 </script>
